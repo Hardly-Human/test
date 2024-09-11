@@ -18,6 +18,11 @@ app.set('views', path.join(__dirname, '../views'));
 // Serve static files
 app.use(express.static(path.join(__dirname, '../public')));
 
+// Add body parsing middleware
+app.use(express.urlencoded({ extended: true }));  // To parse URL-encoded form data
+app.use(express.json());  // To parse JSON request bodies (if needed)
+
+
 // Auth0 configuration
 const config = {
   authRequired: false,

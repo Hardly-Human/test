@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 
   const totalPages = Math.ceil(totalImages / pageSize);
 
-  res.render('gallery', {
+  res.render('index', {
     images,
     currentPage: page,
     totalPages,

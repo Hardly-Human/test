@@ -3,19 +3,140 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
+  <title>Image Sharing Platform</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Navbar styling */
+    .navbar {
+      background-color: #f0e5d8;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar .brand {
+      font-size: 24px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      padding: 10px 20px;
+      color: #555;
+      background-color: #e8cfc7;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .navbar a:hover {
+      background-color: #d3b1a1;
+    }
+
+    .gallery-title {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 32px;
+      color: #555;
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px;
+    }
+
+    .gallery-item {
+      margin: 10px;
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: transform 0.3s;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.05);
+    }
+
+    .pagination {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .pagination a {
+      margin: 0 5px;
+      padding: 8px 16px;
+      text-decoration: none;
+      background-color: #f0e5d8;
+      color: #555;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    .pagination a:hover {
+      background-color: #e8cfc7;
+    }
+
+    /* Utility class */
+    .center {
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to the Image Sharing Platform!</h1>
 
-  <% if (user) { %>
-    <p>Hello, <%= user.name %>!</p>
-    <a href="/profile">View Profile</a> |
-    <a href="/logout">Logout</a>
-  <% } else { %>
-    <a href="/signup">Sign Up</a>  <!-- Signup Button -->
-    <a href="/login">Login</a>  <!-- Login Button -->
-  <% } %>
+  <!-- Navbar Section -->
+  <div class="navbar">
+    <div class="brand">Image Sharing Platform</div>
+    <div>
+      <% if (user) { %>
+        <a href="/profile">View Profile</a>
+        <a href="/logout">Logout</a>
+      <% } else { %>
+        <a href="/signup">Sign Up</a>
+        <a href="/login">Login</a>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Title Section -->
+  <h1 class="gallery-title">Explore the Latest Images</h1>
+
+  <!-- Gallery Section -->
+  <div class="gallery">
+    <% images.forEach(function(image) { %>
+      <!-- Each image links to its details page -->
+      <a href="/images/<%= image.shortUrl %>/details">
+        <img class="gallery-item" src="<%= image.url %>" alt="Image" />
+      </a>
+    <% }) %>
+  </div>
+
+  <!-- Pagination Section -->
+  <div class="pagination">
+    <% if (currentPage > 1) { %>
+      <a href="/?page=<%= currentPage - 1 %>">Previous</a>
+    <% } %>
+
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <a href="/?page=<%= i %>" <% if (i === currentPage) { %> style="font-weight: bold;" <% } %>><%= i %></a>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
+      <a href="/?page=<%= currentPage + 1 %>">Next</a>
+    <% } %>
+  </div>
 
 </body>
 </html>
