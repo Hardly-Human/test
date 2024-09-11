@@ -1,19 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Image } from './Image';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Column()
-  username!: string;
+  username: string;
 
   @Column()
-  email!: string;
+  email: string;
 
   @Column()
-  password!: string;
+  password: string;
 
-  @Column({ default: new Date() })
-  createdAt!: Date;
+  @OneToMany(() => Image, image => image.user)
+  images: Image[];
 }
