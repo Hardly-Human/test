@@ -4,16 +4,19 @@ import { Image } from './Image';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
+
+  @Column({ unique: true })
+  auth0Id!: string;  // Auth0 user ID (sub field)
 
   @Column()
-  username: string;
+  email!: string;  // Email from Auth0
 
-  @Column()
-  email: string;
+  @Column({ nullable: true })
+  name?: string;  // Optional: Full name from Auth0
 
-  @Column()
-  password: string;
+  @Column({ nullable: true })
+  profilePicture?: string;  // Optional: Profile picture URL from Auth0
 
   @OneToMany(() => Image, image => image.user)
   images: Image[];

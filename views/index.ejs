@@ -7,12 +7,15 @@
 </head>
 <body>
   <h1>Welcome to the Image Sharing Platform!</h1>
+
   <% if (user) { %>
     <p>Hello, <%= user.name %>!</p>
     <a href="/profile">View Profile</a> |
     <a href="/logout">Logout</a>
   <% } else { %>
-    <a href="/login">Login</a>
+    <a href="/signup">Sign Up</a>  <!-- Signup Button -->
+    <a href="/login">Login</a>  <!-- Login Button -->
   <% } %>
+
 </body>
 </html>

@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import { uploadImage } from '../controllers/uploadController';
 import upload from '../middleware/multer';
+import { ensureUserExists } from '../middleware/ensureUserExists';
 
 const router = Router();
 
-// Route to render the upload form
-router.get('/upload', (req, res) => {
+// Route to render the upload form (protected route)
+router.get('/upload', ensureUserExists, (req, res) => {
   if (req.oidc.isAuthenticated()) {
     res.render('upload');
   } else {
@@ -14,6 +15,6 @@ router.get('/upload', (req, res) => {
 });
 
 // Route to handle image upload
-router.post('/upload', upload.single('image'), uploadImage);
+router.post('/upload', ensureUserExists, upload.single('image'), uploadImage);
 
 export default router;
