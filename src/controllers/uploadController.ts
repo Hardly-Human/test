@@ -13,6 +13,7 @@ export const uploadImage = async (req: Request, res: Response) => {
     // Generate the CloudFront URL using the S3 key and CloudFront domain
     const cloudFrontUrl = `https://${CLOUD_FRONT_DOMAIN}/${file.key}`;
     const imageRepo = AppDataSource.getRepository(Image);
+    const { title, description } = req.body;
     const user = (req as any).user;  // Ensure req.user is populated by middleware
 
     try {
@@ -26,13 +27,13 @@ export const uploadImage = async (req: Request, res: Response) => {
       image.createdAt = new Date();
       image.shortUrl = shortUrl;  // Assign the generated short URL
       image.user = user;  // Associate image with the logged-in user
+      image.title = title;  // Save title
+      image.description = description;
 
       await imageRepo.save(image);
 
       // Render the upload-success.ejs view with the short URL
-      res.render('upload-success', {
-        shortUrl: `${req.protocol}://${req.get('host')}/i/${shortUrl}`
-      });
+      res.redirect('/profile');
     } catch (error) {
       console.error('Error saving image metadata:', error);
       res.status(500).send('Failed to save image metadata.');

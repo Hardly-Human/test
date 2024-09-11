@@ -93,4 +93,77 @@ router.post('/:shortUrl/comments', async (req, res) => {
   }
 });
 
+// Route to handle deleting an image
+router.post('/:shortUrl/delete', async (req, res) => {
+  const { shortUrl } = req.params;
+  const imageRepo = AppDataSource.getRepository(Image);
+  const auth0User = req.oidc.user;
+
+  try {
+    // Find the image by short URL and ensure it belongs to the logged-in user
+    const image = await imageRepo.findOne({ where: { shortUrl }, relations: ['user'] });
+
+    if (!image || image.user.auth0Id !== auth0User?.sub) {
+      return res.status(403).send('You do not have permission to delete this image');
+    }
+
+    // Delete the image
+    await imageRepo.remove(image);
+
+    res.redirect('/profile');
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+// Route to display the update metadata form
+router.get('/:shortUrl/update', async (req, res) => {
+  const { shortUrl } = req.params;
+  const imageRepo = AppDataSource.getRepository(Image);
+  const auth0User = req.oidc.user;
+
+  try {
+    // Find the image by short URL and ensure it belongs to the logged-in user
+    const image = await imageRepo.findOne({ where: { shortUrl }, relations: ['user'] });
+
+    if (!image || image.user.auth0Id !== auth0User?.sub) {
+      return res.status(403).send('You do not have permission to update this image');
+    }
+
+    res.render('update-image', { image });
+  } catch (error) {
+    console.error('Error fetching image for update:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+// Route to handle updating image metadata
+router.post('/:shortUrl/update', async (req, res) => {
+  const { shortUrl } = req.params;
+  const { title, description } = req.body;
+  const imageRepo = AppDataSource.getRepository(Image);
+  const auth0User = req.oidc.user;
+
+  try {
+    // Find the image by short URL and ensure it belongs to the logged-in user
+    const image = await imageRepo.findOne({ where: { shortUrl }, relations: ['user'] });
+
+    if (!image || image.user.auth0Id !== auth0User?.sub) {
+      return res.status(403).send('You do not have permission to update this image');
+    }
+
+    // Update image metadata
+    image.title = title;
+    image.description = description;
+
+    await imageRepo.save(image);
+
+    res.redirect('/profile');
+  } catch (error) {
+    console.error('Error updating image metadata:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
 export default router;

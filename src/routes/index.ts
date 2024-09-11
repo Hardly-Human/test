@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { AppDataSource } from '../data-source';
 import { ensureUserExists } from '../middleware/ensureUserExists';  // Import the middleware
 import { Image } from '../entity/Image';
+import { User } from '../entity/User';
+
 
 const router = Router();
 
@@ -9,7 +11,7 @@ const router = Router();
 router.get('/', async (req, res) => {
   const imageRepo = AppDataSource.getRepository(Image);
   const page = parseInt(req.query.page as string, 10) || 1;  // Current page
-  const pageSize = 10;  // Number of images per page
+  const pageSize = 5;  // Number of images per page
 
   // Fetch images with pagination
   const [images, totalImages] = await imageRepo.findAndCount({
@@ -42,15 +44,6 @@ router.get('/signup', (req, res) => {
   }
 });
 
-// Handle Signup Callback: After successful signup, ensure the user exists in the DB
-router.get('/profile', ensureUserExists, (req, res) => {
-  if (req.oidc.isAuthenticated()) {
-    res.render('profile', { user: req.oidc.user });
-  } else {
-    res.redirect('/login');
-  }
-});
-
 // Login Route (No DB interaction, just redirect)
 router.get('/login', (req, res) => {
   if (req.oidc.isAuthenticated()) {
@@ -79,6 +72,32 @@ router.get('/i/:shortUrl', async (req, res) => {
     }
   } catch (error) {
     console.error('Error fetching image by short URL:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+
+// User Profile Page
+router.get('/profile',ensureUserExists, async (req, res) => {
+  const userRepo = AppDataSource.getRepository(User);
+  const imageRepo = AppDataSource.getRepository(Image);
+  const auth0User = req.oidc.user;
+
+  try {
+    // Find the user in the database using their Auth0 ID
+    const user = await userRepo.findOne({ where: { auth0Id: auth0User?.sub }, relations: ['images'] });
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    // Fetch the user's uploaded images
+    const userImages = await imageRepo.find({ where: { user: user } });
+
+    // Render the profile page with the user's images
+    res.render('profile', { user, images: userImages });
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
     res.status(500).send('Internal server error');
   }
 });

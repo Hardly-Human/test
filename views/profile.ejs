@@ -1,14 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile</title>
-</head>
-<body>
-  <h1>User Profile</h1>
-  <p>Name: <%= user.name %></p>
-  <p>Email: <%= user.email %></p>
-  <a href="/">Back to Home</a>
-</body>
-</html>
+<%- include('partials/navbar') %>
+
+<!-- Profile Header -->
+<div class="profile-header">
+  <h1><%= user.name %>'s Profile</h1>
+  <p>Here are your uploaded images</p>
+</div>
+
+<!-- Gallery Section -->
+<div class="gallery">
+  <% images.forEach(function(image) { %>
+    <div class="gallery-item-container">
+      <img class="gallery-item" src="<%= image.url %>" alt="Image" />
+      <div class="image-info">
+        <p><strong>Title:</strong> <%= image.title || 'No title provided' %></p>
+        <p><strong>Description:</strong> <%= image.description || 'No description provided' %></p>
+      </div>
+      <div class="image-actions">
+        <form action="/images/<%= image.shortUrl %>/delete" method="POST" style="display:inline;">
+          <button type="submit">Delete</button>
+        </form>
+        <form action="/images/<%= image.shortUrl %>/update" method="GET" style="display:inline;">
+          <button type="submit">Update Metadata</button>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<!-- Back to Home -->
+<a href="/" class="back-link">Back to Home</a>

@@ -1,0 +1,18 @@
+<link rel="stylesheet" href="/style.css">
+
+<div class="update-image-container">
+  <h1>Update Image Metadata</h1>
+
+  <form action="/images/<%= image.shortUrl %>/update" method="POST">
+    <label for="title">Title:</label>
+    <input type="text" name="title" value="<%= image.title %>" required>
+
+    <label for="description">Description:</label>
+    <textarea name="description" rows="4" required><%= image.description %></textarea>
+
+    <button type="submit">Update</button>
+  </form>
+
+  <a href="/profile" class="back-link">Back to Profile</a>
+</div>
+

@@ -1,46 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Details</title>
-  <style>
-    .comment-section {
-      margin-top: 30px;
-    }
-    .comment-form {
-      margin-top: 20px;
-    }
-    .comment {
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin: 10px 0;
-    }
-  </style>
-</head>
-<body>
-  <h1>Image Details</h1>
+<%- include('partials/navbar') %>
+<div class="image-details-container">
+  <div class="image-container">
+    <img src="<%= image.url %>" alt="Image" class="image-details-img" />
+  </div>
+  <div class="details">
+    <h2><%= image.title || 'Untitled' %></h2>
+    <p><strong>Description:</strong> <%= image.description || 'No description provided' %></p>
+    <p><strong>Uploaded by:</strong> 
+      <% if (image.user) { %>
+        <%= image.user.name %>
+      <% } else { %>
+        Unknown User
+      <% } %>
+    </p>
+    <p><strong>Uploaded on:</strong> <%= new Date(image.createdAt).toDateString() %></p>
+    <p><strong>Short URL:</strong> <a href="/i/<%= image.shortUrl %>">/i/<%= image.shortUrl %></a></p>
+  </div>
 
-  <img src="<%= image.url %>" alt="Image" style="max-width: 600px; display: block; margin-bottom: 20px;">
-
-  <!-- Handling if image.user is null -->
-  <p>Uploaded by: 
-    <% if (image.user) { %>
-      <%= image.user.name %>
-    <% } else { %>
-      Unknown User
-    <% } %>
-  </p>
-  <p>Uploaded on: <%= new Date(image.createdAt).toDateString() %></p>
-  <p>Short URL: <a href="/i/<%= image.shortUrl %>">/i/<%= image.shortUrl %></a></p>
+  <% if (user && image.user && user.sub === image.user.auth0Id) { %>
+  <div class="action-buttons">
+    <form action="/images/<%= image.shortUrl %>/delete" method="POST">
+      <button type="submit">Delete</button>
+    </form>
+    <form action="/images/<%= image.shortUrl %>/update" method="GET">
+      <button type="submit">Update</button>
+    </form>
+  </div>
+  <% } %>
 
   <div class="comment-section">
-    <h2>Comments</h2>
+    <h3>Comments</h3>
 
     <% if (image.comments.length > 0) { %>
       <% image.comments.forEach(function(comment) { %>
         <div class="comment">
-          <!-- Handle case when comment.user is null -->
           <p><strong>
             <% if (comment.user) { %>
               <%= comment.user.name %>
@@ -48,7 +41,6 @@
               Unknown User
             <% } %>
           </strong> 
-          <!-- Convert comment.createdAt to Date -->
           (<%= new Date(comment.createdAt).toDateString() %>)</p>
           <p><%= comment.text %></p>
         </div>
@@ -61,7 +53,7 @@
       <div class="comment-form">
         <h3>Leave a Comment</h3>
         <form action="/images/<%= image.shortUrl %>/comments" method="POST">
-          <textarea name="commentText" rows="4" cols="50" required></textarea><br>
+          <textarea name="commentText" rows="4" required></textarea><br>
           <button type="submit">Submit</button>
         </form>
       </div>
@@ -70,6 +62,5 @@
     <% } %>
   </div>
 
-  <a href="/">Back to Home</a>
-</body>
-</html>
+  <a href="/" class="back-link">Back to Home</a>
+</div>

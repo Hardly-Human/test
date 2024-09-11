@@ -19,6 +19,13 @@ export class Image {
   @Column({ unique: true, nullable: true })
   shortUrl?: string;
 
+  @Column({ nullable: true })
+  title?: string;  // Add title field
+
+  @Column({ nullable: true })
+  description?: string;  // Add description field
+
+
   @ManyToOne(() => User, user => user.images)
   user!: User;
 
