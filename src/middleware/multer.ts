@@ -1,20 +1,26 @@
 import multer from 'multer';
-import { S3Client } from '@aws-sdk/client-s3';
 import multerS3 from 'multer-s3';
 import s3 from '../config/awsS3';
+import path from 'path';
 
-// Configure Multer to use S3 for image storage with the new S3Client
+// Multer S3 configuration
 const upload = multer({
   storage: multerS3({
-    s3: s3 as any,  // Casting s3 as any because multer-s3 expects v2 S3 but we're using S3Client
-    bucket: process.env.AWS_BUCKET_NAME || '',
+    s3: s3,
+    bucket: process.env.AWS_BUCKET_NAME as string,
+    acl: 'private',  // Bucket is private
+    contentType: multerS3.AUTO_CONTENT_TYPE,  // Automatically set content-type based on file
+    key: function (req, file, cb) {
+      // Generate a unique filename
+      const uniqueFileName = `${Date.now()}_${path.basename(file.originalname)}`;
+      cb(null, uniqueFileName);
+    },
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },
-    key: function (req, file, cb) {
-      cb(null, Date.now().toString() + '-' + file.originalname); // Unique file name
-    }
-  })
+    contentDisposition: 'inline'  // Ensure files are displayed, not downloaded
+  }),
 });
 
 export default upload;
+

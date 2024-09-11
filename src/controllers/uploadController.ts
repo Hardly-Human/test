@@ -3,12 +3,15 @@ import { AppDataSource } from '../data-source';
 import { Image } from '../entity/Image';
 import { nanoid } from 'nanoid';  // Use ES module syntax for nanoid
 
+const CLOUD_FRONT_DOMAIN = process.env.CLOUD_FRONT_DOMAIN || 'd1234567890abc.cloudfront.net';
+
 // Handle the file upload and save metadata to the database
 export const uploadImage = async (req: Request, res: Response) => {
   const file = req.file as Express.MulterS3.File;
   
   if (file) {
-    const s3Url = `https://${file.bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${file.key}`;
+    // Generate the CloudFront URL using the S3 key and CloudFront domain
+    const cloudFrontUrl = `https://${CLOUD_FRONT_DOMAIN}/${file.key}`;
     const imageRepo = AppDataSource.getRepository(Image);
     const user = (req as any).user;  // Ensure req.user is populated by middleware
 
@@ -18,7 +21,7 @@ export const uploadImage = async (req: Request, res: Response) => {
 
       // Create and save image metadata
       const image = new Image();
-      image.url = s3Url;
+      image.url = cloudFrontUrl;
       image.key = file.key;
       image.createdAt = new Date();
       image.shortUrl = shortUrl;  // Assign the generated short URL
