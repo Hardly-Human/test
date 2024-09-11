@@ -2,6 +2,9 @@ import { Router } from 'express';
 import { uploadImage } from '../controllers/uploadController';
 import upload from '../middleware/multer';
 import { ensureUserExists } from '../middleware/ensureUserExists';
+import { AppDataSource } from '../data-source';
+import { Image } from '../entity/Image';
+
 
 const router = Router();
 
