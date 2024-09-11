@@ -415,3 +415,32 @@ body {
 .back-link:hover {
   text-decoration: underline;
 }
+
+.not-found-container {
+  text-align: center;
+  padding: 50px;
+}
+
+.not-found-container h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+
+.not-found-container p {
+  font-size: 1.2em;
+  margin-bottom: 30px;
+}
+
+.btn-back-home {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #3498db; /* Adjust to your preferred button color */
+  color: #fff;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1em;
+}
+
+.btn-back-home:hover {
+  background-color: #2980b9; /* Slightly darker on hover */
+}

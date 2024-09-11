@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { AppDataSource } from '../data-source';  // Use AppDataSource
-import { User } from '../entity/User';
+import { AppDataSource } from '../data-source'; 
+import { User } from '../models/User';
 
 export const ensureUserExists = async (req: Request, res: Response, next: NextFunction) => {
-  const userRepo = AppDataSource.getRepository(User);  // Use AppDataSource.getRepository
+  const userRepo = AppDataSource.getRepository(User); 
   const auth0Id = req.oidc.user?.sub;
   const email = req.oidc.user?.email;
 

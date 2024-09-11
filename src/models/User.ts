@@ -23,5 +23,5 @@ export class User {
   images!: Image[];
 
   @OneToMany(() => Comment, comment => comment.user)
-  comments!: Comment[];  // Add this line to define the relationship with comments
+  comments!: Comment[]; 
 }

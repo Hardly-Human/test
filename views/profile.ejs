@@ -10,7 +10,10 @@
 <div class="gallery">
   <% images.forEach(function(image) { %>
     <div class="gallery-item-container">
-      <img class="gallery-item" src="<%= image.url %>" alt="Image" />
+      <!-- Make the image clickable -->
+      <a href="/images/<%= image.shortUrl %>/details">
+        <img class="gallery-item" src="<%= image.url %>" alt="Image" />
+      </a>
       <div class="image-info">
         <p><strong>Title:</strong> <%= image.title || 'No title provided' %></p>
         <p><strong>Description:</strong> <%= image.description || 'No description provided' %></p>

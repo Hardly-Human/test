@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { Image } from './entity/Image';  // Import your entities
-import { User } from './entity/User';    // Import your entities
-import { Comment } from './entity/Comment';
+import { Image } from './models/Image'; 
+import { User } from './models/User';   
+import { Comment } from './models/Comment';
 import dotenv from 'dotenv';
 
 // Load environment variables

@@ -13,8 +13,8 @@
         Unknown User
       <% } %>
     </p>
-    <p><strong>Uploaded on:</strong> <%= new Date(image.createdAt).toDateString() %></p>
-    <p><strong>Short URL:</strong> <a href="/i/<%= image.shortUrl %>">/i/<%= image.shortUrl %></a></p>
+    <p><strong>Uploaded on:</strong> <%= new Date(image.createdAt).toLocaleString() %></p>
+    <p><strong>Short URL:</strong> <a href="/images/<%= image.shortUrl %>">images/<%= image.shortUrl %></a></p>
   </div>
 
   <% if (user && image.user && user.sub === image.user.auth0Id) { %>
@@ -41,7 +41,7 @@
               Unknown User
             <% } %>
           </strong> 
-          (<%= new Date(comment.createdAt).toDateString() %>)</p>
+          (<%= new Date(comment.createdAt).toLocaleString() %>)</p>
           <p><%= comment.text %></p>
         </div>
       <% }) %>

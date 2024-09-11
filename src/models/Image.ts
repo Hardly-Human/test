@@ -20,10 +20,10 @@ export class Image {
   shortUrl?: string;
 
   @Column({ nullable: true })
-  title?: string;  // Add title field
+  title?: string;  
 
   @Column({ nullable: true })
-  description?: string;  // Add description field
+  description?: string;  
 
 
   @ManyToOne(() => User, user => user.images)

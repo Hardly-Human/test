@@ -1,11 +1,12 @@
 import 'reflect-metadata';
 import express from 'express';
+import dotenv from 'dotenv';
 import path from 'path';
 import { auth } from 'express-openid-connect';
-import dotenv from 'dotenv';
-import indexRoutes from './routes/index';  // Import index routes
-import imageRoutes from './routes/imageRoutes';  // Import image-related routes
-import { AppDataSource } from './data-source';  // Import the data source
+import  AuthConfig from "./config/auth"
+import indexRoutes from './routes/user';  
+import imageRoutes from './routes/image';  
+import { AppDataSource } from './data-source';
 
 dotenv.config();
 
@@ -20,25 +21,18 @@ app.use(express.static('public'));
 
 // Add body parsing middleware
 app.use(express.urlencoded({ extended: true }));  // To parse URL-encoded form data
-app.use(express.json());  // To parse JSON request bodies (if needed)
+app.use(express.json()); 
 
-
-// Auth0 configuration
-const config = {
-  authRequired: false,
-  auth0Logout: true,
-  secret: process.env.AUTH0_CLIENT_SECRET,
-  baseURL: process.env.AUTH0_BASE_URL,
-  clientID: process.env.AUTH0_CLIENT_ID,
-  issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL
-};
 
 // Initialize the Auth0 middleware
-app.use(auth(config));
+app.use(auth(AuthConfig));
 
 // Define routes
-app.use('/', indexRoutes);  // Mount the index routes at the root path
-app.use('/images', imageRoutes);  // Mount the image-related routes under /images
+app.use('/', indexRoutes); 
+app.use('/images', imageRoutes);  
+app.use((req, res) => {
+  res.status(404).render('404'); 
+});
 
 // Initialize the database connection and start the server
 AppDataSource.initialize()

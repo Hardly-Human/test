@@ -1,12 +1,20 @@
 import { Request, Response } from 'express';
 import { AppDataSource } from '../data-source';
-import { Image } from '../entity/Image';
-import { nanoid } from 'nanoid';  // Use ES module syntax for nanoid
+import { Image } from '../models/Image';
+import { nanoid } from 'nanoid'; 
 
-const CLOUD_FRONT_DOMAIN = process.env.CLOUD_FRONT_DOMAIN || 'd1234567890abc.cloudfront.net';
+const CLOUD_FRONT_DOMAIN = process.env.CLOUD_FRONT_DOMAIN;
+
+export const DisplayImageUploadPage = (req: Request, res: Response) => {
+  if (req.oidc.isAuthenticated()) {
+    res.render('upload');
+  } else {
+    res.redirect('/login');
+  }
+}
 
 // Handle the file upload and save metadata to the database
-export const uploadImage = async (req: Request, res: Response) => {
+export const ImageUploadHandler = async (req: Request, res: Response) => {
   const file = req.file as Express.MulterS3.File;
   
   if (file) {
@@ -14,7 +22,7 @@ export const uploadImage = async (req: Request, res: Response) => {
     const cloudFrontUrl = `https://${CLOUD_FRONT_DOMAIN}/${file.key}`;
     const imageRepo = AppDataSource.getRepository(Image);
     const { title, description } = req.body;
-    const user = (req as any).user;  // Ensure req.user is populated by middleware
+    const user = (req as any).user; 
 
     try {
       // Generate a short URL using nanoid
@@ -25,14 +33,13 @@ export const uploadImage = async (req: Request, res: Response) => {
       image.url = cloudFrontUrl;
       image.key = file.key;
       image.createdAt = new Date();
-      image.shortUrl = shortUrl;  // Assign the generated short URL
-      image.user = user;  // Associate image with the logged-in user
-      image.title = title;  // Save title
+      image.shortUrl = shortUrl; 
+      image.user = user;  
+      image.title = title;
       image.description = description;
 
       await imageRepo.save(image);
 
-      // Render the upload-success.ejs view with the short URL
       res.redirect('/profile');
     } catch (error) {
       console.error('Error saving image metadata:', error);

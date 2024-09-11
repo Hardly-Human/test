@@ -8,7 +8,7 @@ export class Comment {
   id!: number;
 
   @Column('text')
-  text!: string;  // Comment text
+  text!: string; 
 
   @CreateDateColumn()
   createdAt!: Date;  // Automatically set the date of the comment
