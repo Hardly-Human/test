@@ -15,7 +15,7 @@ export const ImageDetailsHandler = async (req: Request, res: Response) => {
     });
 
     if (image) {
-      res.render('image-details', { image, user: req.oidc.user });
+      res.render('image-details', { image, user: req.oidc.user, req });
     } else {
       res.status(404).send('Image not found');
     }

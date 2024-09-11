@@ -14,7 +14,13 @@
       <% } %>
     </p>
     <p><strong>Uploaded on:</strong> <%= new Date(image.createdAt).toLocaleString() %></p>
-    <p><strong>Short URL:</strong> <a href="/images/<%= image.shortUrl %>">images/<%= image.shortUrl %></a></p>
+    <!-- Display the full URL -->
+    <p><strong>Short URL:</strong> 
+      <a href="<%= req.protocol %>://<%= req.get('host') %>/images/<%= image.shortUrl %>">
+        <%= req.protocol %>://<%= req.get('host') %>/images/<%= image.shortUrl %>
+      </a>
+    </p>
+
   </div>
 
   <% if (user && image.user && user.sub === image.user.auth0Id) { %>
