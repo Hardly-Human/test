@@ -1,11 +1,31 @@
 import { Router } from 'express';
+import { AppDataSource } from '../data-source';
 import { ensureUserExists } from '../middleware/ensureUserExists';  // Import the middleware
+import { Image } from '../entity/Image';
 
 const router = Router();
 
-// Home page
-router.get('/', (req, res) => {
-  res.render('index', { title: 'Image Sharing Platform', user: req.oidc.user });
+// Home page (Display gallery)
+router.get('/', async (req, res) => {
+  const imageRepo = AppDataSource.getRepository(Image);
+  const page = parseInt(req.query.page as string, 10) || 1;  // Current page
+  const pageSize = 10;  // Number of images per page
+
+  // Fetch images with pagination
+  const [images, totalImages] = await imageRepo.findAndCount({
+    take: pageSize,
+    skip: (page - 1) * pageSize,
+    order: { createdAt: 'DESC' }  // Order by most recent first
+  });
+
+  const totalPages = Math.ceil(totalImages / pageSize);
+
+  res.render('gallery', {
+    images,
+    currentPage: page,
+    totalPages,
+    user: req.oidc.user  // Pass the authenticated user
+  });
 });
 
 // Signup Route (Force Auth0 to show signup page)

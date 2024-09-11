@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Gallery</title>
+  <style>
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .gallery-item {
+      margin: 10px;
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+    }
+    .pagination {
+      margin-top: 20px;
+    }
+    .pagination a {
+      margin: 0 5px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Gallery</h1>
+
+  <% if (user) { %>
+    <p>Welcome, <%= user.name %>! <a href="/logout">Logout</a></p>
+  <% } else { %>
+    <a href="/login">Login</a>
+  <% } %>
+
+  <div class="gallery">
+    <% images.forEach(function(image) { %>
+      <img class="gallery-item" src="<%= image.url %>" alt="Image" />
+    <% }) %>
+  </div>
+
+  <div class="pagination">
+    <% if (currentPage > 1) { %>
+      <a href="/?page=<%= currentPage - 1 %>">Previous</a>
+    <% } %>
+
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <a href="/?page=<%= i %>" <% if (i === currentPage) { %> style="font-weight: bold;" <% } %>><%= i %></a>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
+      <a href="/?page=<%= currentPage + 1 %>">Next</a>
+    <% } %>
+  </div>
+</body>
+</html>

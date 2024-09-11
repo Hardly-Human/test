@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
+import { AppDataSource } from '../data-source';
 import { Image } from '../entity/Image';
 import { User } from '../entity/User';
 
@@ -12,7 +12,7 @@ export const uploadImage = async (req: Request, res: Response) => {
 
     try {
       // Get the user from Auth0 and find the corresponding User entity
-      const userRepo = getRepository(User);
+      const userRepo = AppDataSource.getRepository(User); 
       const user = await userRepo.findOne({ where: { email: req?.oidc?.user?.email } });
 
       if (!user) {
@@ -20,13 +20,14 @@ export const uploadImage = async (req: Request, res: Response) => {
       }
 
       // Create the image metadata entry
-      const imageRepo = getRepository(Image);
+      const imageRepo = AppDataSource.getRepository(Image); ;
       const image = new Image();
       image.url = s3Url;
       image.key = file.key;
       image.createdAt = new Date();
       image.user = user;  // Associate image with the user
-
+      console.log(user);
+      
       await imageRepo.save(image);
 
       res.send(`File uploaded successfully. Image URL: ${s3Url}`);
