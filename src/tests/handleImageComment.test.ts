@@ -1,5 +1,5 @@
 
-import { handleImageComment } from '../controllers/handleImageComment';
+import { ImageCommentHandler } from '../controllers/handleImageComment';
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import { Comment } from '../models/Comment';
@@ -24,9 +24,6 @@ describe('handleImageComment', () => {
       params: {
         id: 'image123',
       },
-      user: {
-        sub: 'user123',
-      },
     };
     
     res = {
@@ -41,7 +38,7 @@ describe('handleImageComment', () => {
       title: 'Test Image',
     });
 
-    await handleImageComment(req as Request, res as Response);
+    await ImageCommentHandler(req as Request, res as Response);
 
     // Test if the comment was saved in the database
     expect(getRepository(Comment).save).toHaveBeenCalledWith({
@@ -58,7 +55,7 @@ describe('handleImageComment', () => {
   it('should return 404 if the image is not found', async () => {
     (getRepository(Image).findOne as jest.Mock).mockResolvedValue(null);
 
-    await handleImageComment(req as Request, res as Response);
+    await ImageCommentHandler(req as Request, res as Response);
 
     // Test if 404 is returned when the image is not found
     expect(res.status).toHaveBeenCalledWith(404);

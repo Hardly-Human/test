@@ -33,10 +33,14 @@ describe('ImageUploadHandler', () => {
       file: {
         buffer: Buffer.from('image content'),
         originalname: 'test-image.jpg',
-      },
-      user: {
-        sub: 'user123',
-      },
+        fieldname: 'file',              // Fieldname in the form
+        encoding: '7bit',               // Encoding of the file
+        mimetype: 'image/jpeg',         // File mime type
+        size: 12345,                    // File size in bytes
+        destination: '/uploads',        // Where the file is saved (if multer is set to save locally)
+        filename: 'test-image.jpg',     // The name of the file on the server
+        path: '/uploads/test-image.jpg' // Path of the file saved locally
+      } as Express.Multer.File,
     };
     
     res = {

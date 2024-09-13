@@ -1,5 +1,5 @@
 
-import { handleImageDelete } from '../controllers/handleImageDelete';
+import { ImageDeleteHandler } from '../controllers/handleImageDelete';
 import { Request, Response } from 'express';
 import { S3 } from 'aws-sdk';
 import { getRepository } from 'typeorm';
@@ -46,7 +46,7 @@ describe('handleImageDelete', () => {
       url: 'https://cloudfront.example.com/test-image.jpg',
     });
 
-    await handleImageDelete(req as Request, res as Response);
+    await ImageDeleteHandler(req as Request, res as Response);
 
     // Test if S3 deleteObject was called
     expect(mockS3Instance.deleteObject).toHaveBeenCalledWith(expect.any(Object), expect.any(Function));
@@ -62,7 +62,7 @@ describe('handleImageDelete', () => {
   it('should return 404 if the image is not found', async () => {
     (getRepository(Image).findOne as jest.Mock).mockResolvedValue(null);
 
-    await handleImageDelete(req as Request, res as Response);
+    await ImageDeleteHandler(req as Request, res as Response);
 
     // Test if 404 is returned when the image is not found
     expect(res.status).toHaveBeenCalledWith(404);

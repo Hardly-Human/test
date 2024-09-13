@@ -1,0 +1,8 @@
+node_modules
+.git
+.dockerignore
+.env
+.vscode
+.swc
+dist
+coverage

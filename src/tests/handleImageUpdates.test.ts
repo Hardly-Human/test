@@ -1,5 +1,5 @@
 
-import { handleImageUpdates } from '../controllers/handleImageUpdates';
+import { ImageUpdateHandler } from '../controllers/handleImageUpdates';
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import { Image } from '../models/Image';
@@ -40,7 +40,7 @@ describe('handleImageUpdates', () => {
       url: 'https://cloudfront.example.com/test-image.jpg',
     });
 
-    await handleImageUpdates(req as Request, res as Response);
+    await ImageUpdateHandler(req as Request, res as Response);
 
     // Test if the image metadata is updated
     expect(getRepository(Image).save).toHaveBeenCalledWith({
@@ -66,7 +66,7 @@ describe('handleImageUpdates', () => {
   it('should return 404 if the image is not found', async () => {
     (getRepository(Image).findOne as jest.Mock).mockResolvedValue(null);
 
-    await handleImageUpdates(req as Request, res as Response);
+    await ImageUpdateHandler(req as Request, res as Response);
 
     // Test if 404 is returned when the image is not found
     expect(res.status).toHaveBeenCalledWith(404);
